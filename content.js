@@ -250,7 +250,7 @@ window.SITE_CONTENT = {
       }
     },
     {
-      "company": "4399 Network Co., Ltd.",
+      "company": "4399 Network",
       "date": "2016 — 2018",
       "role": {
         "zh": "游戏策划",
