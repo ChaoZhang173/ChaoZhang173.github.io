@@ -102,7 +102,7 @@ window.SITE_CONTENT = {
             "zh": "论文 ↗",
             "en": "Paper ↗"
           },
-          "url": "https://papers.miccai.org/miccai-2026/0545-Paper2047.html"
+          "url": "https://link.springer.com/chapter/10.1007/978-3-032-38179-8_26"
         },
         {
           "label": {
