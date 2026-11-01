@@ -211,8 +211,8 @@ window.SITE_CONTENT = {
     },
     {
       "title": {
-        "zh": "美国物理学会通报",
-        "en": "Bulletin of the American Physical Society"
+        "zh": "美国物理学会通报 ↗",
+        "en": "Bulletin of the American Physical Society ↗"
       },
       "description": {
         "zh": "托卡马克中弹丸及破碎弹丸注入（SPI）碎片火箭加速效应的直接数值模拟",
