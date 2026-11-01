@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const clone = value => JSON.parse(JSON.stringify(value));
-  const websiteData = clone(window.SITE_CONTENT || {});
+  let websiteData = clone(window.SITE_CONTENT || {});
   let data = clone(websiteData);
   let assets = {};
   let active = 'profile';
@@ -112,7 +112,7 @@
   }
   function setBusy(value) {
     busy = value;
-    document.querySelectorAll('.header-actions button, .sidebar-tools button, #restore-button, #dismiss-draft-button, [data-preview-page]').forEach(button => {button.disabled = value;});
+    document.querySelectorAll('.header-actions button, .sidebar-tools button, #github-connect, #github-disconnect, #restore-button, #dismiss-draft-button, [data-preview-page]').forEach(button => {button.disabled = value;});
   }
   async function action(label, task, {dates = false} = {}) {
     if (busy) return;
@@ -604,7 +604,7 @@
     setStatus(unchanged ? `草稿已保存到当前浏览器 · ${time} · 尚未更新网站` : '刚才的草稿已保存，仍有新的修改尚未保存', unchanged ? 'saved' : 'dirty');
     $('#source-badge').textContent = '浏览器草稿';
     $('#draft-banner').hidden = true;
-    showMessage('草稿已保存。要更新网站，请下载网站 ZIP，再将文件上传到 GitHub。');
+    showMessage('草稿已保存到当前浏览器。要更新公开主页，请点击“发布到主页”。');
   }));
   $('#preview-button').addEventListener('click',() => action('预览网站',async () => {
     if (!$('#preview-dialog').open) $('#preview-dialog').showModal();
@@ -633,6 +633,58 @@
   $('#backup-button').addEventListener('click',() => action('备份草稿',async () => {
     const filename = await EditorIO.downloadBackup(clone(data),clone(assets));showMessage(`已开始下载草稿备份${filename ? `（${filename}）` : ''}，请在下载文件夹确认。保留这份文件，之后可以导入继续编辑。`);
   }));
+  function updateConnectionStatus() {
+    const connected=window.EditorPublisher?.isConnected();
+    $('#github-status').textContent=connected ? 'GitHub 已连接 · ChaoZhang173' : 'GitHub 未连接';
+    $('#github-dialog-status').textContent=connected ? '已连接 ChaoZhang173。返回编辑后，点击“发布到主页”。' : '尚未连接';
+    $('#github-connect-form').hidden=Boolean(connected);
+    $('#github-disconnect').hidden=!connected;
+  }
+  function openGitHub() {updateConnectionStatus();$('#github-dialog').showModal();}
+  $('#github-button').addEventListener('click',openGitHub);
+  $('#github-close').addEventListener('click',()=>{$('#github-token').value='';$('#github-dialog').close();});
+  $('#github-dialog').addEventListener('close',()=>{$('#github-token').value='';});
+  $('#github-connect-form').addEventListener('submit',event=>{
+    event.preventDefault();
+    action('连接 GitHub',async()=>{
+      $('#github-dialog-status').textContent='正在核对账号与线上版本…';
+      try {
+        await EditorPublisher.connect($('#github-token').value,clone(websiteData));
+        updateConnectionStatus();
+      } catch(error) {$('#github-dialog-status').textContent=error.message;throw error;}
+      finally {$('#github-token').value='';}
+    });
+  });
+  $('#github-disconnect').addEventListener('click',()=>{EditorPublisher.disconnect();updateConnectionStatus();});
+  $('#latest-button').addEventListener('click',()=>action('载入线上内容',async()=>{
+    if(!await confirmAction('载入线上最新内容会替换当前编辑内容。请先保存或备份需要保留的修改。继续吗？'))return;
+    const latest=await EditorPublisher.latestContent();
+    EditorIO.assertState(latest,{});
+    websiteData=clone(latest);applyState({data:latest,assets:{}},'线上最新内容');dirty=false;
+    $('#draft-banner').hidden=true;
+    setStatus('已载入 GitHub 中的最新内容');
+    showMessage('已载入线上最新内容，可以继续编辑。之前保存的浏览器草稿仍保留。');
+  }));
+  $('#publish-button').addEventListener('click',()=>{
+    if(!window.EditorPublisher?.isConnected()) {openGitHub();return;}
+    action('发布到主页',async()=>{
+      const snapshot=clone(data),assetSnapshot=clone(assets);
+      EditorIO.assertState(snapshot,assetSnapshot);
+      const receipt=await EditorPublisher.publish({data:snapshot,assets:assetSnapshot,baseline:clone(websiteData)},text=>setStatus(text));
+      websiteData=clone(snapshot);
+      dirty=JSON.stringify(data)!==JSON.stringify(snapshot) || JSON.stringify(assets)!==JSON.stringify(assetSnapshot);
+      $('#source-badge').textContent='已提交到 GitHub';
+      showMessage('内容已提交到 GitHub，正在等待公开主页更新。你仍可以继续填写，新的修改需要再次发布。');
+      const live=await EditorPublisher.waitForLive(receipt,text=>setStatus(text));
+      const unchanged=JSON.stringify(data)===JSON.stringify(snapshot) && JSON.stringify(assets)===JSON.stringify(assetSnapshot);
+      dirty=!unchanged;
+      setStatus(unchanged ? (live ? '主页已更新 · 当前内容已上线' : '已提交到 GitHub · 主页仍在发布中') : '上次内容已提交，仍有新的修改尚未发布',unchanged?'saved':'dirty');
+      $('#source-badge').textContent=live?'已上线':'已提交到 GitHub';
+      showMessage(live ? (unchanged?'主页已经更新，可以打开主页查看。':'刚才提交的版本已经上线；你刚填写的新修改尚未发布。') : '内容已成功提交，网站暂未确认生效。请稍后查看主页或 GitHub 发布记录；无需重复上传。');
+      const link=el('a','',live?' 打开主页 ↗':' 查看发布记录 ↗');
+      link.href=live?EditorPublisher.site:EditorPublisher.repository+'/actions';link.target='_blank';link.rel='noopener noreferrer';message.append(link);
+    },{dates:true});
+  });
   $('#import-button').addEventListener('click',() => $('#backup-file').click());
   $('#backup-file').addEventListener('change',async event => {
     const file = event.target.files?.[0];if (!file) return;
