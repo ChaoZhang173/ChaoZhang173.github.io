@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f6f3ed">
+  <title>个人主页 · 内容编辑器</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="editor.css">
+  <script src="content.js" defer></script>
+  <script src="editor-bundle.js" defer></script>
+  <script src="editor-export.js" defer></script>
+  <script src="editor.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#editor-main">跳到编辑内容</a>
+  <header class="editor-header">
+    <div class="editor-brand"><span class="brand-mark" aria-hidden="true">C</span><div><h1>个人主页编辑器</h1><p>把研究、作品与生活慢慢整理好。</p></div></div>
+    <div class="header-actions" aria-label="编辑操作">
+      <button id="save-button" class="button primary" type="button">保存草稿</button>
+      <button id="preview-button" class="button" type="button">预览网站</button>
+      <button id="export-button" class="button dark" type="button">下载网站 ZIP</button>
+    </div>
+  </header>
+  <div class="status-strip"><p id="save-status" role="status" aria-live="polite">正在载入网站内容…</p><span>在本地编辑 · 不会自动发布</span></div>
+  <div id="draft-banner" class="draft-banner" hidden><div><strong>发现这个浏览器保存的草稿</strong><p>当前显示的是网站文件中的内容。恢复草稿后，可以继续上次的编辑。</p></div><div class="banner-actions"><button id="restore-button" class="button primary small" type="button">恢复草稿</button><button id="dismiss-draft-button" class="button small" type="button">继续网站版本</button></div></div>
+  <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+  <div class="editor-layout">
+    <aside class="editor-sidebar">
+      <p class="sidebar-label">编辑内容</p>
+      <nav id="section-nav" aria-label="编辑栏目"></nav>
+      <div class="sidebar-tools">
+        <button id="backup-button" type="button">备份草稿 <span aria-hidden="true">↓</span></button>
+        <button id="import-button" type="button">导入备份 <span aria-hidden="true">↑</span></button>
+        <button id="reset-button" type="button">恢复网站文件版本</button>
+        <input id="backup-file" type="file" accept=".json,application/json" hidden>
+      </div>
+      <p class="sidebar-note">“保存草稿”只保存在当前浏览器。<br>要更新网站，请下载网站 ZIP；要换电脑继续编辑，请备份草稿。</p>
+    </aside>
+    <main id="editor-main" tabindex="-1">
+      <div class="section-heading"><div><p id="section-eyebrow" class="eyebrow">你的主页</p><h2 id="section-title">个人资料</h2><p id="section-description"></p></div><span id="source-badge" class="source-badge">网站版本</span></div>
+      <div id="section-content"></div>
+      <footer class="editor-footer"><span>修改会先留在编辑器中，保存后才进入浏览器草稿。</span><a href="#editor-main">回到本栏顶部 ↑</a></footer>
+    </main>
+  </div>
+  <dialog id="confirmation-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-text">
+    <h2 id="confirmation-title">确认更改</h2>
+    <p id="confirmation-text"></p>
+    <div class="confirmation-actions"><button id="confirmation-cancel" class="button" type="button" autofocus>取消</button><button id="confirmation-accept" class="button primary" type="button">确认</button></div>
+  </dialog>
+  <dialog id="preview-dialog" aria-labelledby="preview-title">
+    <div class="preview-toolbar"><div><h2 id="preview-title">网站预览</h2><p id="preview-status" role="status" aria-live="polite">预览当前编辑内容；外部链接可能在预览中不可用。</p></div><div class="preview-controls"><div class="preview-pages" aria-label="预览页面"><button type="button" data-preview-page="index.html" aria-pressed="true">首页</button><button type="button" data-preview-page="academic.html" aria-pressed="false">学术活动</button><button type="button" data-preview-page="projects.html" aria-pressed="false">个人作品</button><button type="button" data-preview-page="life.html" aria-pressed="false">生活与近况</button></div><button id="preview-width" class="button small" type="button" aria-pressed="false">手机宽度</button><button id="close-preview" class="button small" type="button">关闭预览</button></div></div>
+    <div class="preview-stage"><iframe id="preview-frame" title="个人主页预览" sandbox="allow-scripts"></iframe></div>
+  </dialog>
+  <noscript><p class="no-script">请在浏览器中启用 JavaScript 后使用内容编辑器。</p></noscript>
+</body>
+</html>
