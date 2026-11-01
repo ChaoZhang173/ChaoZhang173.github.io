@@ -4,7 +4,7 @@
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
   const MAX_FILE = 25 * 1024 * 1024;
-  const MIME = {png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',pdf:'application/pdf',svg:'image/svg+xml',html:'text/html',css:'text/css',js:'text/javascript',md:'text/markdown'};
+  const MIME = {png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',pdf:'application/pdf',svg:'image/svg+xml',html:'text/html',css:'text/css',js:'text/javascript',json:'application/json',md:'text/markdown'};
   const clone = value => JSON.parse(JSON.stringify(value));
   const safePath = path => typeof path === 'string' && path.length < 240 && !path.startsWith('/') && !/[\\\x00-\x1f:]/.test(path) && !path.split('/').some(p => p === '..' || p === '.' || !p);
   const decode64 = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
@@ -17,7 +17,7 @@
   const onlineFiles = {};
   const isOnline = () => /^https?:$/.test(window.location?.protocol || '');
   const baseFiles = () => window.EDITOR_BUNDLE?.files || onlineFiles;
-  const templatePaths = ['index.html','academic.html','projects.html','life.html','style.css','script.js','README.md','.nojekyll','editor.html','editor.css','editor-loader.js','editor-publish.js','editor.js','editor-export.js','assets/favicon.svg'];
+  const templatePaths = ['index.html','academic.html','projects.html','life.html','style.css','script.js','site-loader.js','site-version.json','README.md','.nojekyll','editor.html','editor.css','editor-loader.js','editor-publish.js','editor.js','editor-export.js','assets/favicon.svg'];
   async function ensureFiles(paths,assets={}) {
     const pending=[...new Set(paths)].filter(path=>!assets[path] && !baseFiles()[path]);
     if (!pending.length) return;
@@ -262,7 +262,7 @@
       }
     };
     inlineAssets(state);
-    let html=read(name).replace(/<script\b[^>]*src=["'](?:content|script)\.js["'][^>]*>\s*<\/script>/gi,'').replace(/<link\b[^>]*href=["']style\.css["'][^>]*>/gi,'');
+    let html=read(name).replace(/<script\b[^>]*src=["'](?:content|script|site-loader)\.js(?:\?[^"']*)?["'][^>]*>\s*<\/script>/gi,'').replace(/<link\b[^>]*href=["']style\.css["'][^>]*>/gi,'');
     const escapeScript=source=>source.replace(/<\/script/gi,'<\\/script');
     const style=read('style.css').replace(/<\/style/gi,'<\\/style');
     html=html.replace('</head>','<style>'+style+'</style></head>');

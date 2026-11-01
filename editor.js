@@ -682,7 +682,7 @@
       $('#source-badge').textContent=live?'已上线':'已提交到 GitHub';
       showMessage(live ? (unchanged?'主页已经更新，可以打开主页查看。':'刚才提交的版本已经上线；你刚填写的新修改尚未发布。') : '内容已成功提交，网站暂未确认生效。请稍后查看主页或 GitHub 发布记录；无需重复上传。');
       const link=el('a','',live?' 打开主页 ↗':' 查看发布记录 ↗');
-      link.href=live?EditorPublisher.site:EditorPublisher.repository+'/actions';link.target='_blank';link.rel='noopener noreferrer';message.append(link);
+      link.href=live?EditorPublisher.publishedURL(receipt):EditorPublisher.repository+'/actions';link.target='_blank';link.rel='noopener noreferrer';message.append(link);
     },{dates:true});
   });
   $('#import-button').addEventListener('click',() => $('#backup-file').click());

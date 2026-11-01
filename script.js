@@ -26,7 +26,11 @@
   function safeUrl(value, image = false) {
     const url = textValue(value).trim();
     if (!url || /[\u0000-\u001f\u007f]/.test(url)) return '';
-    if (!/^[a-z][a-z\d+.-]*:/i.test(url)) return url;
+    if (!/^[a-z][a-z\d+.-]*:/i.test(url)) {
+      const version=window.SITE_ASSET_VERSIONS?.[url];
+      if (url.startsWith('assets/') && /^[a-f0-9]{40}$/.test(version || '')) return url+'?v='+version;
+      return url;
+    }
     if (/^https?:/i.test(url)) return url;
     if (!image && /^mailto:/i.test(url)) return url;
     if (!image && /^data:application\/pdf;base64,[A-Za-z0-9+/]+=*$/i.test(url)) return url;

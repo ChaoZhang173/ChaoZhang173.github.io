@@ -45,7 +45,12 @@
       const blob=await request(repositoryPath+'/git/blobs/'+sha(files.get('content.js')));
       if(blob.encoding!=='base64')throw new Error('无法读取线上内容。');
       const source=decoder.decode(Uint8Array.from(atob(blob.content.replace(/\s/g,'')),c=>c.charCodeAt(0)));
-      return {head,treeSHA,files,data:parseContent(source)};
+      let version=null;
+      if(files.has('site-version.json')) {
+        const versionBlob=await request(repositoryPath+'/git/blobs/'+sha(files.get('site-version.json')));
+        try {version=JSON.parse(decoder.decode(Uint8Array.from(atob(versionBlob.content.replace(/\s/g,'')),c=>c.charCodeAt(0))));} catch(_) {}
+      }
+      return {head,treeSHA,files,data:parseContent(source),version};
     }
     async function latestContent() {
       if(!account) {
@@ -109,7 +114,7 @@
         // An identical retry is a no-op, including when a previous acknowledgement was lost.
         if(equal(remote.data,data) && uploads.length===0) {
           connectedAssets=remote.files;
-          return {sha:remote.head,source,noChange:true};
+          return {sha:remote.head,source,version:remote.version,noChange:true};
         }
         if(!equal(remote.data,baseline))throw new Error('线上内容已被其他页面或设备更新。本次没有覆盖它；请备份当前修改，再载入线上最新内容合并。');
         for(const file of uploads) {
@@ -124,6 +129,11 @@
           if(sha(blob.sha)!==file.hash)throw new Error('文件上传校验未通过，本次没有发布。');
           entries.push({path:file.path,mode:'100644',type:'blob',sha:blob.sha});
         }
+        const assetVersions={};
+        const uploaded=new Map(uploads.map(file=>[file.path,file.hash]));
+        for(const path of needed)assetVersions[path]=uploaded.get(path)||remote.files.get(path);
+        const version={id:cryptoImpl.randomUUID(),contentSHA:contentHash,assets:assetVersions};
+        entries.push({path:'site-version.json',mode:'100644',type:'blob',content:JSON.stringify(version,null,2)+'\n'});
         progress('正在提交网站内容…');
         const tree=await request(repositoryPath+'/git/trees',{method:'POST',body:{base_tree:remote.treeSHA,tree:entries}});
         const commit=await request(repositoryPath+'/git/commits',{method:'POST',body:{message:'Update homepage from web editor',tree:sha(tree.sha),parents:[remote.head]}});
@@ -141,12 +151,17 @@
         connectedAssets=new Map(remote.files);
         connectedAssets.set('content.js',contentHash);
         for(const file of uploads)connectedAssets.set(file.path,file.hash);
-        return {sha:committed,source,noChange:false};
+        return {sha:committed,source,version,noChange:false};
       } finally {locked=false;}
     }
     async function waitForLive(receipt,progress=()=>{},attempts=18) {
       for(let i=0;i<attempts;i++) {
         try {
+          if(receipt.version?.id) {
+            const versionResponse=await fetchImpl(SITE+'site-version.json?published='+receipt.sha+'&check='+Date.now(),{cache:'no-store',credentials:'omit',redirect:'error',signal:AbortSignal.timeout(12000)});
+            const liveVersion=versionResponse.ok?await versionResponse.json():null;
+            if(liveVersion?.id!==receipt.version.id)throw new Error('The submitted revision is not deployed yet.');
+          }
           const response=await fetchImpl(SITE+'content.js?published='+receipt.sha,{cache:'no-store',credentials:'omit',redirect:'error',signal:AbortSignal.timeout(12000)});
           if(response.ok && equal(parseContent(await response.text()),parseContent(receipt.source)))return true;
         } catch(_) {}
@@ -155,7 +170,8 @@
       }
       return false;
     }
-    return {connect,disconnect,isConnected:()=>Boolean(account && token),latestContent,publish,waitForLive,site:SITE,repository:'https://github.com/'+REPO};
+    const publishedURL=receipt=>SITE+'?published='+encodeURIComponent(receipt.sha);
+    return {connect,disconnect,isConnected:()=>Boolean(account && token),latestContent,publish,waitForLive,publishedURL,site:SITE,repository:'https://github.com/'+REPO};
   }
   if(typeof window!=='undefined')window.EditorPublisher=createPublisher();
   if(typeof module!=='undefined' && module.exports)module.exports={createPublisher,parseContent,contentJS};
