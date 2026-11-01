@@ -1,6 +1,8 @@
 /* Read the published revision before rendering, so browser caches cannot hide edits. */
 (() => {
   'use strict';
+  // Older editor tabs may still embed this tag in their unsaved srcdoc preview.
+  if(location.href==='about:srcdoc')return;
   const online=/^https?:$/.test(location.protocol);
   function loadScript(path) {
     return new Promise((resolve,reject)=>{
