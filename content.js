@@ -196,7 +196,7 @@ window.SITE_CONTENT = {
         "zh": "大规模分布式 GPU 加速的呼吸运动分辨 3D 非笛卡尔 mGRE MRI 重建",
         "en": "Large-Scale Distributed GPU-Accelerated Respiratory Motion-Resolved Reconstruction of 3D non-Cartesian mGRE MRI"
       },
-      "url": "https://papers.miccai.org/miccai-2026/0545-Paper2047.html"
+      "url": "https://link.springer.com/chapter/10.1007/978-3-032-38179-8_26"
     },
     {
       "title": {
@@ -208,6 +208,17 @@ window.SITE_CONTENT = {
         "en": "Accelerated Inference Method and System for Large-Scale Autoregressive Language Models · CN121525846A · Published February 2026"
       },
       "url": "https://patents.google.com/patent/CN121525846A/en"
+    },
+    {
+      "title": {
+        "zh": "美国物理学会通报",
+        "en": "Bulletin of the American Physical Society"
+      },
+      "description": {
+        "zh": "托卡马克中弹丸及破碎弹丸注入（SPI）碎片火箭加速效应的直接数值模拟",
+        "en": "Direct Numerical Simulation of Rocket Acceleration of Pellets and SPI Fragments in Tokamaks"
+      },
+      "url": "https://meetings-archive.aps.org/dpp/2024/up12/36"
     }
   ],
   "education": [
