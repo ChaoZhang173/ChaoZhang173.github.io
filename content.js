@@ -457,20 +457,6 @@ window.SITE_CONTENT = {
       }
     },
     {
-      "date": "2026-10-07",
-      "text": {
-        "zh": "哈萨克斯坦阿拉木图 · 旅行",
-        "en": "Almaty, Kazakhstan · Travel"
-      },
-      "photo": {
-        "src": "",
-        "alt": {
-          "zh": "哈萨克斯坦阿拉木图旅行照片",
-          "en": "A photograph from Almaty"
-        }
-      }
-    },
-    {
       "date": "2026-10-03",
       "endDate": "2026-10-06",
       "text": {
