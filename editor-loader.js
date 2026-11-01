@@ -5,7 +5,7 @@
   function load(path) {
     return new Promise((resolve,reject) => {
       const script=document.createElement('script');
-      script.src=online ? path+'?v='+(path==='content.js'?Date.now():'20261101-publish') : path;
+      script.src=online ? path+'?v='+(path==='content.js'?Date.now():'20261102-publish') : path;
       script.onload=resolve;
       script.onerror=()=>reject(new Error('无法载入 '+path+'，请检查网络后重新打开编辑器。'));
       document.head.append(script);

@@ -238,7 +238,7 @@
       thumbnail.append(image);
     } else thumbnail.append(el('span','','尚未添加图片'));
     const controls = el('div','media-controls');
-    controls.append(el('h4','',title),el('p','','支持 JPG、PNG、WebP 和 GIF，每个文件不超过 25 MB。文件留在本地，导出时自动加入网站。'));
+    controls.append(el('h4','',title),el('p','','支持 JPG、PNG、WebP 和 GIF，每个文件不超过 25 MB。照片先保留在编辑器中，发布时上传到主页，导出时加入网站包。'));
     const actions = el('div','file-actions');
     actions.append(filePicker(config.src ? '更换图片' : '选择图片', '.jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif', async file => {
       if (!/\.(jpe?g|png|webp|gif)$/i.test(file.name) && !/^image\/(jpeg|png|webp|gif)$/i.test(file.type)) throw new Error('请选择 JPG、PNG、WebP 或 GIF 图片。');
