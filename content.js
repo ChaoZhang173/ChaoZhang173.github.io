@@ -352,12 +352,14 @@ window.SITE_CONTENT = {
       "fit": "cover"
     },
     "qqbot": {
-      "src": "assets/uploads/1298f6df-a55f-4306-819e-2bfe895312bd-IMG_7844.jpg",
+      "src": "assets/uploads/57bc2c6d-cab3-498f-b461-b2b72af24196-IMG_7878.jpg",
       "alt": {
         "zh": "QQ 群聊天机器人作品图片",
         "en": "QQ Group Chatbot project image"
       },
-      "fit": "cover"
+      "fit": "contain",
+      "width": 3024,
+      "height": 4032
     },
     "writingstyle": {
       "src": "assets/uploads/e879f459-4ef1-4321-a4c9-ab1635833f0e-Screenshot_2026-11-01_at_8.43.01_PM.png",
@@ -768,6 +770,24 @@ window.SITE_CONTENT = {
   "independentProjects": [
     {
       "name": {
+        "zh": "DeepSeek (大肥鱼) 聊天机器人",
+        "en": "DeepSeek Chatbot"
+      },
+      "media": "qqbot",
+      "url": "https://github.com/ChaoZhang173/chatbot-qq-maibot",
+      "category": "AGENT FRAMEWORK",
+      "description": {
+        "zh": "支持日常聊天、持续学习与演进的对话智能体，接入 QQ、B 站、小红书等社交平台，支持社交账号自动化运营，具备视频浏览、动态发布、评论回复及直播实时互动等功能；接入实体语音终端，可通过 Wi-Fi 随时连接服务器，实现实时语音对话。",
+        "en": "A conversational AI agent supporting everyday chat, continuous learning, and adaptation. Integrates with QQ, Bilibili, and Xiaohongshu(RED) to automate social media account management, including video browsing, publishing posts, replying to comments, and interacting with livestreams in real time. Connects to a dedicated voice terminal over Wi-Fi, enabling on-demand access to the server for real-time voice conversations."
+      },
+      "tags": [
+        "Agent",
+        "LLM",
+        "AI"
+      ]
+    },
+    {
+      "name": {
         "zh": "MRI Recon Image Reader",
         "en": "MRI Recon Image Reader"
       },
@@ -783,24 +803,6 @@ window.SITE_CONTENT = {
       ],
       "media": "viewer",
       "url": "https://github.com/ChaoZhang173/MRI-Recon-Image-Reader"
-    },
-    {
-      "name": {
-        "zh": "DeepSeek (大肥鱼) 聊天机器人",
-        "en": "DeepSeek Chatbot"
-      },
-      "media": "qqbot",
-      "url": "https://github.com/ChaoZhang173/chatbot-qq-maibot",
-      "category": "AGENT FRAMEWORK",
-      "description": {
-        "zh": "支持持续学习与演进的对话智能体，接入 QQ、B 站、小红书等社交平台接口，支持社交账号自动化运营，具备浏览视频、发布动态与回复、观看直播并实时互动等功能。",
-        "en": "A self-evolving conversational agent integrated with social platforms including QQ, Bilibili, and Xiaohongshu (RED) for automated account management. It supports browsing videos, publishing posts and replies, and interacting with audiences during livestreams."
-      },
-      "tags": [
-        "Agent",
-        "LLM",
-        "AI"
-      ]
     },
     {
       "name": {
