@@ -106,7 +106,14 @@ window.SITE_CONTENT = {
         },
         {
           "label": {
-            "zh": "海报 ↗",
+            "zh": "代码 ↗",
+            "en": "Source ↗"
+          },
+          "url": "https://github.com/MRI-Research/MultiNodeMRI-MICCAI26"
+        },
+        {
+          "label": {
+            "zh": "海报 ↗    ",
             "en": "Poster ↗"
           },
           "url": ""
